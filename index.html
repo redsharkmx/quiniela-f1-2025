@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiniela F1 2025 🏎️</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --racing-red: #E10600;
+      --carbon-black: #15151E;
+      --track-gray: #2A2A35;
+      --silver: #C0C0C8;
+      --white: #FFFFFF;
+      --gold: #FFD700;
+      --neon-cyan: #00F5FF;
+      --checkered: repeating-linear-gradient(
+        45deg,
+        #000,
+        #000 10px,
+        #fff 10px,
+        #fff 20px
+      );
+    }
+
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: var(--carbon-black);
+      color: var(--white);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Fondo animado de pista */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        linear-gradient(90deg, transparent 0%, var(--carbon-black) 50%, transparent 100%),
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 50px,
+          rgba(225, 6, 0, 0.03) 50px,
+          rgba(225, 6, 0, 0.03) 52px
+        );
+      z-index: -1;
+      opacity: 0.6;
+      animation: trackScroll 20s linear infinite;
+    }
+
+    @keyframes trackScroll {
+      0% { background-position: 0 0; }
+      100% { background-position: 0 1000px; }
+    }
+
+    /* Tipografía */
+    h1, h2, h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: 4rem;
+      background: linear-gradient(135deg, var(--racing-red), var(--neon-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 30px rgba(225, 6, 0, 0.5);
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); filter: brightness(1); }
+      50% { transform: scale(1.02); filter: brightness(1.2); }
+    }
+
+    /* Container principal */
+    .app-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Header con logo */
+    .header {
+      text-align: center;
+      padding: 40px 20px;
+      position: relative;
+      border-bottom: 3px solid var(--racing-red);
+      margin-bottom: 40px;
+      background: linear-gradient(180deg, var(--track-gray) 0%, transparent 100%);
+    }
+
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--checkered);
+      animation: checkeredSlide 0.5s linear infinite;
+    }
+
+    @keyframes checkeredSlide {
+      0% { background-position: 0 0; }
+      100% { background-position: 40px 0; }
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: var(--silver);
+      margin-top: 10px;
+      font-weight: 300;
+    }
+
+    /* Navegación */
+    .nav {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem;
+      letter-spacing: 1px;
+      padding: 15px 30px;
+      background: linear-gradient(135deg, var(--track-gray), var(--carbon-black));
+      color: var(--white);
+      border: 2px solid var(--racing-red);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      text-transform: uppercase;
+    }
+
+    .nav-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, var(--racing-red), transparent);
+      transition: left 0.5s;
+    }
+
+    .nav-btn:hover::before {
+      left: 100%;
+    }
+
+    .nav-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(225, 6, 0, 0.5);
+      border-color: var(--neon-cyan);
+    }
+
+    .nav-btn.active {
+      background: var(--racing-red);
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 20px rgba(225, 6, 0, 0.8);
+    }
+
+    /* Tarjetas */
+    .card {
+      background: linear-gradient(135deg, var(--track-gray), #1a1a24);
+      border: 2px solid var(--silver);
+      padding: 30px;
+      margin-bottom: 30px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--racing-red), var(--neon-cyan), var(--racing-red));
+      background-size: 200% 100%;
+      animation: borderSlide 3s linear infinite;
+    }
+
+    @keyframes borderSlide {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 200% 0%; }
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 245, 255, 0.2);
+      border-color: var(--neon-cyan);
+    }
+
+    /* Formularios */
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: var(--neon-cyan);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid var(--silver);
+      color: var(--white);
+      font-size: 1.1rem;
+      font-family: 'Rajdhani', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--racing-red);
+      background: rgba(225, 6, 0, 0.1);
+      box-shadow: 0 0 20px rgba(225, 6, 0, 0.3);
+    }
+
+    input::placeholder {
+      color: var(--silver);
+      opacity: 0.5;
+    }
+
+    /* Botones */
+    .btn {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 2px;
+      padding: 18px 40px;
+      background: linear-gradient(135deg, var(--racing-red), #c00500);
+      color: var(--white);
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(225, 6, 0, 0.4);
+    }
+
+    .btn::after {
+      content: '▶';
+      position: absolute;
+      right: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .btn:hover::after {
+      opacity: 1;
+      right: 20px;
+    }
+
+    .btn:hover {
+      background: linear-gradient(135deg, #ff1a00, var(--racing-red));
+      transform: scale(1.02);
+      box-shadow: 0 10px 30px rgba(225, 6, 0, 0.6);
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, var(--track-gray), var(--carbon-black));
+      border: 2px solid var(--silver);
+    }
+
+    .btn-secondary:hover {
+      background: linear-gradient(135deg, var(--silver), var(--track-gray));
+      color: var(--carbon-black);
+    }
+
+    /* Tabla de clasificación */
+    .leaderboard {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    .leaderboard thead {
+      background: linear-gradient(135deg, var(--racing-red), #a00400);
+    }
+
+    .leaderboard th {
+      padding: 20px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem;
+      letter-spacing: 2px;
+      text-align: left;
+      text-transform: uppercase;
+    }
+
+    .leaderboard td {
+      padding: 18px;
+      border-bottom: 1px solid rgba(192, 192, 200, 0.2);
+      font-size: 1.1rem;
+    }
+
+    .leaderboard tbody tr {
+      transition: all 0.3s ease;
+      background: rgba(42, 42, 53, 0.3);
+    }
+
+    .leaderboard tbody tr:hover {
+      background: rgba(225, 6, 0, 0.1);
+      transform: translateX(5px);
+    }
+
+    .leaderboard .podium-1 {
+      background: linear-gradient(90deg, rgba(255, 215, 0, 0.2), transparent);
+      border-left: 5px solid var(--gold);
+    }
+
+    .leaderboard .podium-2 {
+      background: linear-gradient(90deg, rgba(192, 192, 200, 0.2), transparent);
+      border-left: 5px solid var(--silver);
+    }
+
+    .leaderboard .podium-3 {
+      background: linear-gradient(90deg, rgba(205, 127, 50, 0.2), transparent);
+      border-left: 5px solid #CD7F32;
+    }
+
+    /* Grid de carreras */
+    .races-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .race-card {
+      background: linear-gradient(135deg, var(--track-gray), #1a1a24);
+      border: 2px solid var(--silver);
+      padding: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .race-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: var(--racing-red);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .race-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .race-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--neon-cyan);
+      box-shadow: 0 10px 30px rgba(0, 245, 255, 0.3);
+    }
+
+    .race-card.completed {
+      opacity: 0.6;
+      border-color: var(--gold);
+    }
+
+    .race-card.active {
+      border-color: var(--racing-red);
+      box-shadow: 0 0 30px rgba(225, 6, 0, 0.5);
+    }
+
+    .race-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      color: var(--white);
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+
+    .race-country {
+      color: var(--silver);
+      font-size: 1rem;
+      margin-bottom: 15px;
+    }
+
+    .race-date {
+      color: var(--neon-cyan);
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .race-status {
+      display: inline-block;
+      padding: 5px 15px;
+      margin-top: 10px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-radius: 3px;
+    }
+
+    .race-status.open {
+      background: var(--racing-red);
+      color: var(--white);
+    }
+
+    .race-status.closed {
+      background: var(--track-gray);
+      color: var(--silver);
+    }
+
+    .race-status.finished {
+      background: var(--gold);
+      color: var(--carbon-black);
+    }
+
+    /* Mensajes de error/éxito */
+    .message {
+      padding: 15px 20px;
+      margin-bottom: 20px;
+      border-left: 5px solid;
+      font-weight: 600;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .message.error {
+      background: rgba(225, 6, 0, 0.2);
+      border-color: var(--racing-red);
+      color: #ff6b6b;
+    }
+
+    .message.success {
+      background: rgba(0, 245, 255, 0.2);
+      border-color: var(--neon-cyan);
+      color: var(--neon-cyan);
+    }
+
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 50px;
+      font-size: 1.5rem;
+      color: var(--neon-cyan);
+    }
+
+    .spinner {
+      border: 5px solid var(--track-gray);
+      border-top: 5px solid var(--racing-red);
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Logout button */
+    .logout-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      background: var(--track-gray);
+      color: var(--white);
+      border: 2px solid var(--racing-red);
+      cursor: pointer;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 600;
+      text-transform: uppercase;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .logout-btn:hover {
+      background: var(--racing-red);
+      transform: scale(1.05);
+    }
+
+    /* User info */
+    .user-info {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      padding: 15px 20px;
+      background: rgba(42, 42, 53, 0.95);
+      border: 2px solid var(--neon-cyan);
+      font-weight: 600;
+      color: var(--neon-cyan);
+      z-index: 1000;
+      text-align: right;
+    }
+
+    /* Predicción form especial */
+    .prediction-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .prediction-item {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 20px;
+      border: 2px solid var(--racing-red);
+      transition: all 0.3s ease;
+    }
+
+    .prediction-item:hover {
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.3);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2.5rem;
+      }
+
+      .nav {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .races-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .prediction-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .user-info, .logout-btn {
+        position: static;
+        margin-bottom: 20px;
+        width: 100%;
+      }
+    }
+
+    /* Pilotos select mejorado */
+    select option {
+      background: var(--carbon-black);
+      color: var(--white);
+      padding: 10px;
+    }
+
+    /* Countdown timer */
+    .countdown {
+      display: inline-block;
+      padding: 10px 20px;
+      background: rgba(225, 6, 0, 0.2);
+      border: 2px solid var(--racing-red);
+      color: var(--racing-red);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem;
+      letter-spacing: 2px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    // ==========================================
+    // CONFIGURACIÓN - ¡IMPORTANTE!
+    // ==========================================
+    // Reemplaza esta URL con la URL de tu Google Apps Script
+    const API_URL = 'https://script.google.com/macros/s/AKfycbzT20cPm6ArbAMU3807XaH4RZXpfas6xI5f4ohpUTurX7mj3SSJybAH338XIZg9PULWWg/exec';
+
+    // Lista de pilotos F1 2025
+    const PILOTOS = [
+      'Alexander Albon', 'Fernando Alonso', 'Kimi Antonelli', 'Oliver Bearman', 
+      'Gabriel Bortoleto', 'Valtteri Bottas', 'Franco Colapinto', 'Pierre Gasly', 
+      'Isack Hadjar', 'Lewis Hamilton', 'Nico Hulkenberg', 'Liam Lawson', 
+      'Charles Leclerc', 'Arvid Lindblad', 'Lando Norris', 'Esteban Ocon', 
+      'Sergio Perez', 'Oscar Piastri', 'George Russell', 'Carlos Sainz', 
+      'Lance Stroll', 'Max Verstappen', 'Sin abandono'
+    ].sort();
+
+    // ==========================================
+    // COMPONENTE PRINCIPAL
+    // ==========================================
+    function App() {
+      const [usuario, setUsuario] = useState(null);
+      const [vistaActual, setVistaActual] = useState('login');
+      const [loading, setLoading] = useState(true);
+
+      useEffect(() => {
+        cargarSesion();
+      }, []);
+
+      const cargarSesion = async () => {
+        try {
+          const sesion = await window.storage.get('sesion_f1');
+          if (sesion) {
+            setUsuario(JSON.parse(sesion.value));
+            setVistaActual('dashboard');
+          }
+        } catch (error) {
+          console.log('No hay sesión previa');
+        }
+        setLoading(false);
+      };
+
+      const guardarSesion = async (usuarioData) => {
+        await window.storage.set('sesion_f1', JSON.stringify(usuarioData));
+        setUsuario(usuarioData);
+      };
+
+      const cerrarSesion = async () => {
+        await window.storage.delete('sesion_f1');
+        setUsuario(null);
+        setVistaActual('login');
+      };
+
+      if (loading) {
+        return (
+          <div className="loading">
+            <div className="spinner"></div>
+            <div>Cargando Quiniela F1...</div>
+          </div>
+        );
+      }
+
+      if (!usuario) {
+        return <LoginRegistro onLogin={guardarSesion} />;
+      }
+
+      return (
+        <div className="app-container">
+          <button className="logout-btn" onClick={cerrarSesion}>
+            Cerrar Sesión
+          </button>
+          <div className="user-info">
+            🏁 {usuario.nombre}
+          </div>
+
+          <header className="header">
+            <h1>🏎️ Quiniela F1 2025</h1>
+            <p className="subtitle">Predicciones de Carreras</p>
+          </header>
+
+          <nav className="nav">
+            <button
+              className={`nav-btn ${vistaActual === 'dashboard' ? 'active' : ''}`}
+              onClick={() => setVistaActual('dashboard')}
+            >
+              Dashboard
+            </button>
+            <button
+              className={`nav-btn ${vistaActual === 'predicciones' ? 'active' : ''}`}
+              onClick={() => setVistaActual('predicciones')}
+            >
+              Mis Predicciones
+            </button>
+            <button
+              className={`nav-btn ${vistaActual === 'clasificacion' ? 'active' : ''}`}
+              onClick={() => setVistaActual('clasificacion')}
+            >
+              Clasificación
+            </button>
+          </nav>
+
+          {vistaActual === 'dashboard' && <Dashboard usuario={usuario} />}
+          {vistaActual === 'predicciones' && <MisPredicciones usuario={usuario} />}
+          {vistaActual === 'clasificacion' && <Clasificacion />}
+        </div>
+      );
+    }
+
+    // ==========================================
+    // COMPONENTE: LOGIN Y REGISTRO
+    // ==========================================
+    function LoginRegistro({ onLogin }) {
+      const [modo, setModo] = useState('login');
+      const [formData, setFormData] = useState({
+        nombre: '',
+        email: '',
+        pin: ''
+      });
+      const [mensaje, setMensaje] = useState(null);
+      const [cargando, setCargando] = useState(false);
+
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+        setCargando(true);
+        setMensaje(null);
+
+        try {
+          const accion = modo === 'login' ? 'login' : 'registrar';
+          const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+              accion,
+              ...formData
+            })
+          });
+
+          const data = await response.json();
+
+          if (data.exito) {
+            setMensaje({ tipo: 'success', texto: data.mensaje });
+            setTimeout(() => onLogin(data.usuario), 1000);
+          } else {
+            setMensaje({ tipo: 'error', texto: data.mensaje });
+          }
+        } catch (error) {
+          setMensaje({ tipo: 'error', texto: 'Error de conexión. Verifica la URL del API.' });
+        }
+
+        setCargando(false);
+      };
+
+      return (
+        <div className="app-container">
+          <header className="header">
+            <h1>🏎️ Quiniela F1 2025</h1>
+            <p className="subtitle">Bienvenida bienvenido a la Quiniela Mtz Rocha y anexas</p>
+          </header>
+
+          <div className="card" style={{ maxWidth: '500px', margin: '0 auto' }}>
+            <h2 style={{ marginBottom: '30px', textAlign: 'center', color: 'var(--neon-cyan)' }}>
+              {modo === 'login' ? 'Iniciar Sesión' : 'Registro'}
+            </h2>
+
+            {mensaje && (
+              <div className={`message ${mensaje.tipo}`}>
+                {mensaje.texto}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit}>
+              {modo === 'registrar' && (
+                <div className="form-group">
+                  <label>Nombre Completo</label>
+                  <input
+                    type="text"
+                    placeholder="Tu nombre"
+                    value={formData.nombre}
+                    onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
+                    required
+                  />
+                </div>
+              )}
+
+              <div className="form-group">
+                <label>Email</label>
+                <input
+                  type="email"
+                  placeholder="tu@email.com"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>PIN (4 dígitos)</label>
+                <input
+                  type="password"
+                  placeholder="1234"
+                  maxLength="4"
+                  pattern="\d{4}"
+                  value={formData.pin}
+                  onChange={(e) => setFormData({ ...formData, pin: e.target.value })}
+                  required
+                />
+              </div>
+
+              <button type="submit" className="btn" disabled={cargando}>
+                {cargando ? 'Procesando...' : (modo === 'login' ? 'Entrar' : 'Registrarse')}
+              </button>
+            </form>
+
+            <button
+              className="btn btn-secondary"
+              style={{ marginTop: '15px' }}
+              onClick={() => setModo(modo === 'login' ? 'registrar' : 'login')}
+            >
+              {modo === 'login' ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia sesión'}
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    // ==========================================
+    // COMPONENTE: DASHBOARD
+    // ==========================================
+    function Dashboard({ usuario }) {
+      const [carreras, setCarreras] = useState([]);
+      const [carreraSeleccionada, setCarreraSeleccionada] = useState(null);
+      const [loading, setLoading] = useState(true);
+
+      useEffect(() => {
+        cargarCarreras();
+      }, []);
+
+      const cargarCarreras = async () => {
+        try {
+          const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({ accion: 'obtener_calendario' })
+          });
+          const data = await response.json();
+          if (data.exito) {
+            setCarreras(data.carreras);
+          }
+        } catch (error) {
+          console.error('Error al cargar carreras:', error);
+        }
+        setLoading(false);
+      };
+
+      if (loading) {
+        return (
+          <div className="loading">
+            <div className="spinner"></div>
+            <div>Cargando calendario...</div>
+          </div>
+        );
+      }
+
+      if (carreraSeleccionada) {
+        return (
+          <FormularioPrediccion
+            carrera={carreraSeleccionada}
+            usuario={usuario}
+            onVolver={() => setCarreraSeleccionada(null)}
+          />
+        );
+      }
+
+      const proximaCarrera = carreras.find(c => c.prediccionAbierta);
+
+      return (
+        <div>
+          {proximaCarrera && (
+            <div className="card" style={{ background: 'linear-gradient(135deg, var(--racing-red), #8B0000)', marginBottom: '40px' }}>
+              <h2 style={{ fontSize: '2rem', marginBottom: '15px' }}>🏁 Próxima Carrera</h2>
+              <h3 style={{ fontSize: '1.8rem', color: 'var(--white)' }}>{proximaCarrera.nombre}</h3>
+              <p style={{ fontSize: '1.3rem', marginTop: '10px' }}>📍 {proximaCarrera.pais}</p>
+              <p style={{ fontSize: '1.3rem', marginTop: '10px' }}>📅 {proximaCarrera.fecha}</p>
+              <p className="countdown" style={{ display: 'block', marginTop: '15px' }}>
+                ⏰ Límite: {proximaCarrera.limite}
+              </p>
+              <button
+                className="btn"
+                style={{ marginTop: '20px', background: 'var(--white)', color: 'var(--racing-red)' }}
+                onClick={() => setCarreraSeleccionada(proximaCarrera)}
+              >
+                Hacer Predicción
+              </button>
+            </div>
+          )}
+
+          <h2 style={{ fontSize: '2rem', marginBottom: '20px', color: 'var(--neon-cyan)' }}>
+            📅 Calendario Completo
+          </h2>
+
+          <div className="races-grid">
+            {carreras.map(carrera => (
+              <div
+                key={carrera.id}
+                className={`race-card ${carrera.yaTermino ? 'completed' : ''} ${carrera.prediccionAbierta ? 'active' : ''}`}
+                onClick={() => carrera.prediccionAbierta && setCarreraSeleccionada(carrera)}
+              >
+                <div className="race-name">{carrera.nombre}</div>
+                <div className="race-country">📍 {carrera.pais}</div>
+                <div className="race-date">📅 {carrera.fecha}</div>
+                <div className={`race-status ${carrera.prediccionAbierta ? 'open' : carrera.yaTermino ? 'finished' : 'closed'}`}>
+                  {carrera.prediccionAbierta ? '🟢 Abierta' : carrera.yaTermino ? '🏁 Finalizada' : '🔒 Cerrada'}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    // ==========================================
+    // COMPONENTE: FORMULARIO DE PREDICCIÓN
+    // ==========================================
+    function FormularioPrediccion({ carrera, usuario, onVolver }) {
+      const [prediccion, setPrediccion] = useState({
+        p1: '',
+        p2: '',
+        p3: '',
+        pole: '',
+        vueltaRapida: '',
+        abandono: ''
+      });
+      const [mensaje, setMensaje] = useState(null);
+      const [cargando, setCargando] = useState(false);
+
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        // Validar que todos los campos estén llenos
+        if (Object.values(prediccion).some(v => !v)) {
+          setMensaje({ tipo: 'error', texto: 'Completa todos los campos' });
+          return;
+        }
+
+        setCargando(true);
+        setMensaje(null);
+
+        try {
+          const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+              accion: 'guardar_prediccion',
+              usuarioId: usuario.id,
+              carreraId: carrera.id,
+              ...prediccion
+            })
+          });
+
+          const data = await response.json();
+
+          if (data.exito) {
+            setMensaje({ tipo: 'success', texto: data.mensaje });
+            setTimeout(() => onVolver(), 2000);
+          } else {
+            setMensaje({ tipo: 'error', texto: data.mensaje });
+          }
+        } catch (error) {
+          setMensaje({ tipo: 'error', texto: 'Error al guardar predicción' });
+        }
+
+        setCargando(false);
+      };
+
+      return (
+        <div>
+          <button className="btn btn-secondary" onClick={onVolver} style={{ marginBottom: '20px', width: 'auto', padding: '10px 30px' }}>
+            ← Volver
+          </button>
+
+          <div className="card">
+            <h2 style={{ fontSize: '2.5rem', marginBottom: '10px', color: 'var(--racing-red)' }}>
+              {carrera.nombre}
+            </h2>
+            <p style={{ fontSize: '1.3rem', color: 'var(--silver)', marginBottom: '30px' }}>
+              📍 {carrera.pais} | 📅 {carrera.fecha} | ⏰ Límite: {carrera.limite}
+            </p>
+
+            {mensaje && (
+              <div className={`message ${mensaje.tipo}`}>
+                {mensaje.texto}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit}>
+              <div className="prediction-grid">
+                <div className="prediction-item">
+                  <label>🥇 Posición 1 (10 pts)</label>
+                  <select
+                    value={prediccion.p1}
+                    onChange={(e) => setPrediccion({ ...prediccion, p1: e.target.value })}
+                    required
+                  >
+                    <option value="">Selecciona piloto</option>
+                    {PILOTOS.filter(p => p !== 'Sin abandono').map(piloto => (
+                      <option key={piloto} value={piloto}>{piloto}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="prediction-item">
+                  <label>🥈 Posición 2 (10 pts)</label>
+                  <select
+                    value={prediccion.p2}
+                    onChange={(e) => setPrediccion({ ...prediccion, p2: e.target.value })}
+                    required
+                  >
+                    <option value="">Selecciona piloto</option>
+                    {PILOTOS.filter(p => p !== 'Sin abandono').map(piloto => (
+                      <option key={piloto} value={piloto}>{piloto}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="prediction-item">
+                  <label>🥉 Posición 3 (10 pts)</label>
+                  <select
+                    value={prediccion.p3}
+                    onChange={(e) => setPrediccion({ ...prediccion, p3: e.target.value })}
+                    required
+                  >
+                    <option value="">Selecciona piloto</option>
+                    {PILOTOS.filter(p => p !== 'Sin abandono').map(piloto => (
+                      <option key={piloto} value={piloto}>{piloto}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="prediction-item">
+                  <label>🏁 Pole Position (2 pts)</label>
+                  <select
+                    value={prediccion.pole}
+                    onChange={(e) => setPrediccion({ ...prediccion, pole: e.target.value })}
+                    required
+                  >
+                    <option value="">Selecciona piloto</option>
+                    {PILOTOS.filter(p => p !== 'Sin abandono').map(piloto => (
+                      <option key={piloto} value={piloto}>{piloto}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="prediction-item">
+                  <label>⚡ Vuelta Rápida (1 pt)</label>
+                  <select
+                    value={prediccion.vueltaRapida}
+                    onChange={(e) => setPrediccion({ ...prediccion, vueltaRapida: e.target.value })}
+                    required
+                  >
+                    <option value="">Selecciona piloto</option>
+                    {PILOTOS.filter(p => p !== 'Sin abandono').map(piloto => (
+                      <option key={piloto} value={piloto}>{piloto}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="prediction-item">
+                  <label>💥 Primer Abandono (3 pts)</label>
+                  <select
+                    value={prediccion.abandono}
+                    onChange={(e) => setPrediccion({ ...prediccion, abandono: e.target.value })}
+                    required
+                  >
+                    <option value="">Selecciona opción</option>
+                    {PILOTOS.map(piloto => (
+                      <option key={piloto} value={piloto}>{piloto}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <button type="submit" className="btn" disabled={cargando} style={{ marginTop: '30px' }}>
+                {cargando ? 'Guardando...' : '💾 Guardar Predicción'}
+              </button>
+            </form>
+          </div>
+        </div>
+      );
+    }
+
+    // ==========================================
+    // COMPONENTE: MIS PREDICCIONES
+    // ==========================================
+    function MisPredicciones({ usuario }) {
+      const [predicciones, setPredicciones] = useState([]);
+      const [loading, setLoading] = useState(true);
+
+      useEffect(() => {
+        cargarPredicciones();
+      }, []);
+
+      const cargarPredicciones = async () => {
+        try {
+          const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+              accion: 'obtener_mis_predicciones',
+              usuarioId: usuario.id
+            })
+          });
+          const data = await response.json();
+          if (data.exito) {
+            setPredicciones(data.predicciones);
+          }
+        } catch (error) {
+          console.error('Error al cargar predicciones:', error);
+        }
+        setLoading(false);
+      };
+
+      if (loading) {
+        return (
+          <div className="loading">
+            <div className="spinner"></div>
+            <div>Cargando tus predicciones...</div>
+          </div>
+        );
+      }
+
+      if (predicciones.length === 0) {
+        return (
+          <div className="card" style={{ textAlign: 'center', padding: '60px 20px' }}>
+            <h2 style={{ fontSize: '2rem', color: 'var(--silver)' }}>
+              Aún no has hecho predicciones
+            </h2>
+            <p style={{ fontSize: '1.2rem', marginTop: '20px', color: 'var(--silver)' }}>
+              Ve al Dashboard para empezar
+            </p>
+          </div>
+        );
+      }
+
+      return (
+        <div>
+          <h2 style={{ fontSize: '2rem', marginBottom: '30px', color: 'var(--neon-cyan)' }}>
+            📋 Mis Predicciones
+          </h2>
+
+          {predicciones.map(pred => (
+            <div key={pred.carreraId} className="card">
+              <h3 style={{ fontSize: '1.8rem', marginBottom: '20px', color: 'var(--white)' }}>
+                {pred.carreraNombre}
+              </h3>
+
+              <div className="prediction-grid">
+                <div style={{ background: 'rgba(0,0,0,0.3)', padding: '15px' }}>
+                  <strong style={{ color: 'var(--gold)' }}>🥇 P1:</strong> {pred.prediccion.p1}
+                  {pred.puntos !== null && <span style={{ color: 'var(--neon-cyan)', marginLeft: '10px' }}>({pred.puntos?.p1 || 0} pts)</span>}
+                </div>
+                <div style={{ background: 'rgba(0,0,0,0.3)', padding: '15px' }}>
+                  <strong style={{ color: 'var(--silver)' }}>🥈 P2:</strong> {pred.prediccion.p2}
+                  {pred.puntos !== null && <span style={{ color: 'var(--neon-cyan)', marginLeft: '10px' }}>({pred.puntos?.p2 || 0} pts)</span>}
+                </div>
+                <div style={{ background: 'rgba(0,0,0,0.3)', padding: '15px' }}>
+                  <strong style={{ color: '#CD7F32' }}>🥉 P3:</strong> {pred.prediccion.p3}
+                  {pred.puntos !== null && <span style={{ color: 'var(--neon-cyan)', marginLeft: '10px' }}>({pred.puntos?.p3 || 0} pts)</span>}
+                </div>
+                <div style={{ background: 'rgba(0,0,0,0.3)', padding: '15px' }}>
+                  <strong style={{ color: 'var(--racing-red)' }}>🏁 Pole:</strong> {pred.prediccion.pole}
+                  {pred.puntos !== null && <span style={{ color: 'var(--neon-cyan)', marginLeft: '10px' }}>({pred.puntos?.pole || 0} pts)</span>}
+                </div>
+                <div style={{ background: 'rgba(0,0,0,0.3)', padding: '15px' }}>
+                  <strong style={{ color: 'var(--neon-cyan)' }}>⚡ Vuelta:</strong> {pred.prediccion.vueltaRapida}
+                  {pred.puntos !== null && <span style={{ color: 'var(--neon-cyan)', marginLeft: '10px' }}>({pred.puntos?.vueltaRapida || 0} pts)</span>}
+                </div>
+                <div style={{ background: 'rgba(0,0,0,0.3)', padding: '15px' }}>
+                  <strong style={{ color: 'var(--white)' }}>💥 Abandono:</strong> {pred.prediccion.abandono}
+                  {pred.puntos !== null && <span style={{ color: 'var(--neon-cyan)', marginLeft: '10px' }}>({pred.puntos?.abandono || 0} pts)</span>}
+                </div>
+              </div>
+
+              {pred.puntos !== null && (
+                <div style={{
+                  marginTop: '20px',
+                  padding: '15px',
+                  background: 'var(--racing-red)',
+                  textAlign: 'center',
+                  fontSize: '1.5rem',
+                  fontWeight: 'bold',
+                  letterSpacing: '2px'
+                }}>
+                  TOTAL: {pred.puntos.total || 0} PUNTOS
+                </div>
+              )}
+
+              {pred.estado === 'abierta' && (
+                <div style={{
+                  marginTop: '15px',
+                  padding: '10px',
+                  background: 'rgba(0, 245, 255, 0.2)',
+                  border: '2px solid var(--neon-cyan)',
+                  textAlign: 'center',
+                  color: 'var(--neon-cyan)'
+                }}>
+                  ✏️ Puedes editar esta predicción hasta el jueves 20:00
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    // ==========================================
+    // COMPONENTE: CLASIFICACIÓN GENERAL
+    // ==========================================
+    function Clasificacion() {
+      const [clasificacion, setClasificacion] = useState([]);
+      const [loading, setLoading] = useState(true);
+
+      useEffect(() => {
+        cargarClasificacion();
+      }, []);
+
+      const cargarClasificacion = async () => {
+        try {
+          const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({ accion: 'obtener_clasificacion' })
+          });
+          const data = await response.json();
+          if (data.exito) {
+            setClasificacion(data.clasificacion);
+          }
+        } catch (error) {
+          console.error('Error al cargar clasificación:', error);
+        }
+        setLoading(false);
+      };
+
+      if (loading) {
+        return (
+          <div className="loading">
+            <div className="spinner"></div>
+            <div>Cargando clasificación...</div>
+          </div>
+        );
+      }
+
+      return (
+        <div>
+          <h2 style={{ fontSize: '2rem', marginBottom: '30px', color: 'var(--gold)', textAlign: 'center' }}>
+            🏆 Clasificación General
+          </h2>
+
+          <div className="card">
+            <table className="leaderboard">
+              <thead>
+                <tr>
+                  <th>Pos</th>
+                  <th>Piloto</th>
+                  <th>Puntos</th>
+                  <th>Carreras</th>
+                </tr>
+              </thead>
+              <tbody>
+                {clasificacion.map(user => (
+                  <tr
+                    key={user.posicion}
+                    className={
+                      user.posicion === 1 ? 'podium-1' :
+                      user.posicion === 2 ? 'podium-2' :
+                      user.posicion === 3 ? 'podium-3' : ''
+                    }
+                  >
+                    <td style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
+                      {user.posicion === 1 ? '🥇' : user.posicion === 2 ? '🥈' : user.posicion === 3 ? '🥉' : user.posicion}
+                    </td>
+                    <td style={{ fontSize: '1.2rem', fontWeight: '600' }}>{user.nombre}</td>
+                    <td style={{ fontSize: '1.5rem', color: 'var(--neon-cyan)', fontWeight: 'bold' }}>
+                      {user.totalPuntos}
+                    </td>
+                    <td style={{ color: 'var(--silver)' }}>{user.carrerasParticipadas}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    }
+
+    // ==========================================
+    // RENDERIZAR APP
+    // ==========================================
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
