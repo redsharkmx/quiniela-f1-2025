@@ -661,7 +661,7 @@
       const guardarSesion = async (usuarioData) => {
         await window.storage.set('sesion_f1', JSON.stringify(usuarioData));
         setUsuario(usuarioData);
-      };
+      }; 
 
       const cerrarSesion = async () => {
         await window.storage.delete('sesion_f1');
