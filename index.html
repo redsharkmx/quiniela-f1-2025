@@ -645,11 +645,11 @@
         cargarSesion();
       }, []);
 
-      const cargarSesion = async () => {
+      const cargarSesion = () => {
         try {
-          const sesion = await window.storage.get('sesion_f1');
+          const sesion = localStorage.getItem('sesion_f1');
           if (sesion) {
-            setUsuario(JSON.parse(sesion.value));
+            setUsuario(JSON.parse(sesion));
             setVistaActual('dashboard');
           }
         } catch (error) {
@@ -658,13 +658,13 @@
         setLoading(false);
       };
 
-      const guardarSesion = async (usuarioData) => {
-        await window.storage.set('sesion_f1', JSON.stringify(usuarioData));
+      const guardarSesion = (usuarioData) => {
+        localStorage.setItem('sesion_f1', JSON.stringify(usuarioData));
         setUsuario(usuarioData);
-      }; 
+      };
 
-      const cerrarSesion = async () => {
-        await window.storage.delete('sesion_f1');
+      const cerrarSesion = () => {
+        localStorage.removeItem('sesion_f1');
         setUsuario(null);
         setVistaActual('login');
       };
