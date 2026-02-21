@@ -621,7 +621,7 @@
     // CONFIGURACIÓN - ¡IMPORTANTE!
     // ==========================================
     // Reemplaza esta URL con la URL de tu Google Apps Script
-    const API_URL = 'https://script.google.com/macros/s/AKfycbyxJmWR5k-sw-d9E8PDrcSEqwjg8wcMTojsC5mG2IP9WlaWxiV59eyY8-Dn2D7mHsYsIg/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbzT20cPm6ArbAMU3807XaH4RZXpfas6xI5f4ohpUTurX7mj3SSJybAH338XIZg9PULWWg/exec';
 
     // Lista de pilotos F1 2025
     const PILOTOS = [
@@ -692,7 +692,7 @@
           </div>
 
           <header className="header">
-            <h1>🏎️ Quiniela F1 2025</h1>
+            <h1>🏎️ Quiniela F1 2026</h1>
             <p className="subtitle">Predicciones de Carreras</p>
           </header>
 
@@ -710,6 +710,12 @@
               Mis Predicciones
             </button>
             <button
+              className={`nav-btn ${vistaActual === 'ver_predicciones' ? 'active' : ''}`}
+              onClick={() => setVistaActual('ver_predicciones')}
+            >
+              Ver Predicciones
+            </button>
+            <button
               className={`nav-btn ${vistaActual === 'clasificacion' ? 'active' : ''}`}
               onClick={() => setVistaActual('clasificacion')}
             >
@@ -719,6 +725,7 @@
 
           {vistaActual === 'dashboard' && <Dashboard usuario={usuario} />}
           {vistaActual === 'predicciones' && <MisPredicciones usuario={usuario} />}
+          {vistaActual === 'ver_predicciones' && <VerPrediccionesCarrera />}
           {vistaActual === 'clasificacion' && <Clasificacion />}
         </div>
       );
@@ -897,7 +904,7 @@
               <h3 style={{ fontSize: '1.8rem', color: 'var(--white)' }}>{proximaCarrera.nombre}</h3>
               <p style={{ fontSize: '1.3rem', marginTop: '10px' }}>📍 {proximaCarrera.pais}</p>
               <p style={{ fontSize: '1.3rem', marginTop: '10px' }}>📅 {proximaCarrera.fecha}</p>
-              <p className="countdown" style={{ display: 'block', marginTop: '15px', color: 'var(--white)' }}>
+              <p className="countdown" style={{ display: 'block', marginTop: '15px' }}>
                 ⏰ Límite: {proximaCarrera.limite}
               </p>
               <button
@@ -1273,7 +1280,7 @@
               <thead>
                 <tr>
                   <th>Pos</th>
-                  <th>Nombre</th>
+                  <th>Piloto</th>
                   <th>Puntos</th>
                   <th>Carreras</th>
                 </tr>
@@ -1300,6 +1307,296 @@
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+      );
+    }
+
+    // ==========================================
+    // COMPONENTE: VER PREDICCIONES POR CARRERA
+    // ==========================================
+    function VerPrediccionesCarrera() {
+      const [carreras, setCarreras] = useState([]);
+      const [carreraSeleccionada, setCarreraSeleccionada] = useState(null);
+      const [datosprediccion, setDatosPrediccion] = useState(null);
+      const [loading, setLoading] = useState(true);
+
+      useEffect(() => {
+        cargarCarreras();
+      }, []);
+
+      const cargarCarreras = async () => {
+        try {
+          const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({ accion: 'obtener_calendario' })
+          });
+          const data = await response.json();
+          if (data.exito) {
+            // Filtrar solo carreras cerradas o finalizadas
+            const carrerasMostrar = data.carreras.filter(c => !c.prediccionAbierta);
+            setCarreras(carrerasMostrar);
+          }
+        } catch (error) {
+          console.error('Error al cargar carreras:', error);
+        }
+        setLoading(false);
+      };
+
+      const verPredicciones = async (carrera) => {
+        setCarreraSeleccionada(carrera);
+        setLoading(true);
+        try {
+          const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+              accion: 'obtener_predicciones_carrera',
+              carreraId: carrera.id
+            })
+          });
+          const data = await response.json();
+          if (data.exito) {
+            setDatosPrediccion(data);
+          }
+        } catch (error) {
+          console.error('Error:', error);
+        }
+        setLoading(false);
+      };
+
+      if (loading && !carreras.length) {
+        return (
+          <div className="loading">
+            <div className="spinner"></div>
+            <div>Cargando carreras...</div>
+          </div>
+        );
+      }
+
+      if (carreras.length === 0) {
+        return (
+          <div className="card" style={{ textAlign: 'center', padding: '60px 20px' }}>
+            <h2 style={{ fontSize: '2rem', color: 'var(--silver)' }}>
+              Aún no hay carreras cerradas
+            </h2>
+            <p style={{ fontSize: '1.2rem', marginTop: '20px', color: 'var(--silver)' }}>
+              Las predicciones se mostrarán después del jueves 20:00
+            </p>
+          </div>
+        );
+      }
+
+      // Vista de carrera seleccionada
+      if (carreraSeleccionada && datosPrediccion) {
+        return (
+          <div>
+            <button 
+              className="btn btn-secondary" 
+              onClick={() => { setCarreraSeleccionada(null); setDatosPrediccion(null); }}
+              style={{ marginBottom: '20px', width: 'auto', padding: '10px 30px' }}
+            >
+              ← Volver
+            </button>
+
+            <div className="card">
+              <h2 style={{ fontSize: '2.5rem', marginBottom: '20px', color: 'var(--racing-red)' }}>
+                {datosPrediccion.nombreCarrera}
+              </h2>
+
+              <div style={{ 
+                padding: '15px', 
+                background: 'rgba(0, 245, 255, 0.1)', 
+                border: '2px solid var(--neon-cyan)',
+                marginBottom: '30px',
+                textAlign: 'center'
+              }}>
+                <strong style={{ fontSize: '1.3rem', color: 'var(--neon-cyan)' }}>
+                  👥 {datosPrediccion.totalParticipantes} Participantes
+                </strong>
+              </div>
+
+              {/* CASO 1: Solo lista de participantes (cerrada pero sin resultados) */}
+              {datosPrediccion.estado === 'cerrada' && datosPrediccion.participantes && (
+                <div>
+                  <p style={{ 
+                    fontSize: '1.2rem', 
+                    color: 'var(--silver)', 
+                    textAlign: 'center',
+                    marginBottom: '30px',
+                    padding: '20px',
+                    background: 'rgba(255, 215, 0, 0.1)',
+                    border: '2px solid var(--gold)'
+                  }}>
+                    ✅ {datosPrediccion.mensaje}
+                  </p>
+
+                  <h3 style={{ fontSize: '1.8rem', marginBottom: '20px', color: 'var(--white)' }}>
+                    Participantes que ya predijeron:
+                  </h3>
+
+                  <div style={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+                    gap: '15px'
+                  }}>
+                    {datosPrediccion.participantes.map((participante, idx) => (
+                      <div key={idx} style={{
+                        padding: '15px',
+                        background: 'rgba(0, 0, 0, 0.3)',
+                        border: '2px solid var(--silver)',
+                        textAlign: 'center'
+                      }}>
+                        <div style={{ fontSize: '1.2rem', fontWeight: '600', color: 'var(--white)' }}>
+                          {participante.nombre}
+                        </div>
+                        <div style={{ fontSize: '0.9rem', color: 'var(--silver)', marginTop: '5px' }}>
+                          {participante.fechaPrediccion}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* CASO 2: Predicciones completas con puntos (finalizada) */}
+              {datosPrediccion.estado === 'finalizada' && datosPrediccion.predicciones && (
+                <div>
+                  {/* Resultado Real */}
+                  {datosPrediccion.resultadoReal && (
+                    <div style={{
+                      padding: '25px',
+                      background: 'linear-gradient(135deg, var(--racing-red), #8B0000)',
+                      marginBottom: '40px',
+                      border: '3px solid var(--gold)'
+                    }}>
+                      <h3 style={{ fontSize: '2rem', marginBottom: '20px', textAlign: 'center', color: 'var(--white)' }}>
+                        🏁 Resultado Oficial
+                      </h3>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '15px' }}>
+                        <div style={{ textAlign: 'center' }}>
+                          <div style={{ fontSize: '1rem', color: 'var(--gold)' }}>🥇 P1</div>
+                          <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{datosPrediccion.resultadoReal.p1}</div>
+                        </div>
+                        <div style={{ textAlign: 'center' }}>
+                          <div style={{ fontSize: '1rem', color: 'var(--silver)' }}>🥈 P2</div>
+                          <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{datosPrediccion.resultadoReal.p2}</div>
+                        </div>
+                        <div style={{ textAlign: 'center' }}>
+                          <div style={{ fontSize: '1rem', color: '#CD7F32' }}>🥉 P3</div>
+                          <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{datosPrediccion.resultadoReal.p3}</div>
+                        </div>
+                        <div style={{ textAlign: 'center' }}>
+                          <div style={{ fontSize: '1rem', color: 'var(--neon-cyan)' }}>🏁 Pole</div>
+                          <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{datosPrediccion.resultadoReal.pole}</div>
+                        </div>
+                        <div style={{ textAlign: 'center' }}>
+                          <div style={{ fontSize: '1rem', color: 'var(--neon-cyan)' }}>⚡ Vuelta</div>
+                          <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{datosPrediccion.resultadoReal.vueltaRapida}</div>
+                        </div>
+                        <div style={{ textAlign: 'center' }}>
+                          <div style={{ fontSize: '1rem', color: 'var(--white)' }}>💥 Abandono</div>
+                          <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{datosPrediccion.resultadoReal.abandono}</div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Predicciones de todos (ordenadas por puntos) */}
+                  <h3 style={{ fontSize: '2rem', marginBottom: '20px', color: 'var(--neon-cyan)' }}>
+                    📊 Predicciones y Puntos
+                  </h3>
+
+                  {datosPrediccion.predicciones.map((pred, idx) => (
+                    <div key={idx} className="card" style={{ 
+                      marginBottom: '20px',
+                      borderLeft: idx === 0 ? '5px solid var(--gold)' : idx === 1 ? '5px solid var(--silver)' : idx === 2 ? '5px solid #CD7F32' : '2px solid var(--silver)'
+                    }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
+                        <h4 style={{ fontSize: '1.5rem', color: 'var(--white)', margin: 0 }}>
+                          {idx + 1}. {pred.nombre}
+                        </h4>
+                        <div style={{
+                          padding: '10px 25px',
+                          background: 'var(--racing-red)',
+                          fontSize: '1.8rem',
+                          fontWeight: 'bold',
+                          fontFamily: "'Bebas Neue', sans-serif",
+                          letterSpacing: '2px'
+                        }}>
+                          {pred.puntos.total} PTS
+                        </div>
+                      </div>
+
+                      <div className="prediction-grid">
+                        <div style={{ background: 'rgba(0,0,0,0.3)', padding: '15px' }}>
+                          <strong style={{ color: 'var(--gold)' }}>🥇 P1:</strong> {pred.prediccion.p1}
+                          <div style={{ color: 'var(--neon-cyan)', marginTop: '5px', fontSize: '1.1rem', fontWeight: 'bold' }}>
+                            +{pred.puntos.p1} pts
+                          </div>
+                        </div>
+                        <div style={{ background: 'rgba(0,0,0,0.3)', padding: '15px' }}>
+                          <strong style={{ color: 'var(--silver)' }}>🥈 P2:</strong> {pred.prediccion.p2}
+                          <div style={{ color: 'var(--neon-cyan)', marginTop: '5px', fontSize: '1.1rem', fontWeight: 'bold' }}>
+                            +{pred.puntos.p2} pts
+                          </div>
+                        </div>
+                        <div style={{ background: 'rgba(0,0,0,0.3)', padding: '15px' }}>
+                          <strong style={{ color: '#CD7F32' }}>🥉 P3:</strong> {pred.prediccion.p3}
+                          <div style={{ color: 'var(--neon-cyan)', marginTop: '5px', fontSize: '1.1rem', fontWeight: 'bold' }}>
+                            +{pred.puntos.p3} pts
+                          </div>
+                        </div>
+                        <div style={{ background: 'rgba(0,0,0,0.3)', padding: '15px' }}>
+                          <strong style={{ color: 'var(--racing-red)' }}>🏁 Pole:</strong> {pred.prediccion.pole}
+                          <div style={{ color: 'var(--neon-cyan)', marginTop: '5px', fontSize: '1.1rem', fontWeight: 'bold' }}>
+                            +{pred.puntos.pole} pts
+                          </div>
+                        </div>
+                        <div style={{ background: 'rgba(0,0,0,0.3)', padding: '15px' }}>
+                          <strong style={{ color: 'var(--neon-cyan)' }}>⚡ Vuelta:</strong> {pred.prediccion.vueltaRapida}
+                          <div style={{ color: 'var(--neon-cyan)', marginTop: '5px', fontSize: '1.1rem', fontWeight: 'bold' }}>
+                            +{pred.puntos.vueltaRapida} pts
+                          </div>
+                        </div>
+                        <div style={{ background: 'rgba(0,0,0,0.3)', padding: '15px' }}>
+                          <strong style={{ color: 'var(--white)' }}>💥 Abandono:</strong> {pred.prediccion.abandono}
+                          <div style={{ color: 'var(--neon-cyan)', marginTop: '5px', fontSize: '1.1rem', fontWeight: 'bold' }}>
+                            +{pred.puntos.abandono} pts
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      }
+
+      // Vista principal: lista de carreras
+      return (
+        <div>
+          <h2 style={{ fontSize: '2rem', marginBottom: '30px', color: 'var(--neon-cyan)' }}>
+            👁️ Ver Predicciones por Carrera
+          </h2>
+
+          <div className="races-grid">
+            {carreras.map(carrera => (
+              <div
+                key={carrera.id}
+                className={`race-card ${carrera.yaTermino ? 'completed' : 'closed'}`}
+                onClick={() => verPredicciones(carrera)}
+                style={{ cursor: 'pointer' }}
+              >
+                <div className="race-name">{carrera.nombre}</div>
+                <div className="race-country">📍 {carrera.pais}</div>
+                <div className="race-date">📅 {carrera.fecha}</div>
+                <div className={`race-status ${carrera.yaTermino ? 'finished' : 'closed'}`}>
+                  {carrera.yaTermino ? '📊 Ver Predicciones y Puntos' : '👥 Ver Participantes'}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       );
