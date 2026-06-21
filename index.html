@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiniela F1 2026 🏎️</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --racing-red: #E10600;
+      --carbon-black: #15151E;
+      --track-gray: #2A2A35;
+      --silver: #C0C0C8;
+      --white: #FFFFFF;
+      --gold: #FFD700;
+      --neon-cyan: #00F5FF;
+    }
+
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: var(--carbon-black);
+      color: var(--white);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent 0%, var(--carbon-black) 50%, transparent 100%),
+                  repeating-linear-gradient(0deg, transparent, transparent 50px, rgba(225, 6, 0, 0.03) 50px, rgba(225, 6, 0, 0.03) 52px);
+      z-index: -1;
+      opacity: 0.6;
+    }
+
+    h1, h2, h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: 3rem;
+      background: linear-gradient(135deg, var(--racing-red), var(--neon-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .header {
+      text-align: center;
+      padding: 40px 20px;
+      border-bottom: 3px solid var(--racing-red);
+      margin-bottom: 40px;
+      background: linear-gradient(180deg, var(--track-gray) 0%, transparent 100%);
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: var(--silver);
+      margin-top: 10px;
+    }
+
+    .nav {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem;
+      letter-spacing: 1px;
+      padding: 15px 30px;
+      background: linear-gradient(135deg, var(--track-gray), var(--carbon-black));
+      color: var(--white);
+      border: 2px solid var(--racing-red);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+    }
+
+    .nav-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(225, 6, 0, 0.5);
+      border-color: var(--neon-cyan);
+    }
+
+    .nav-btn.active {
+      background: var(--racing-red);
+      border-color: var(--neon-cyan);
+    }
+
+    .card {
+      background: linear-gradient(135deg, var(--track-gray), #1a1a24);
+      border: 2px solid var(--silver);
+      padding: 30px;
+      margin-bottom: 30px;
+      border-top: 4px solid var(--racing-red);
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 245, 255, 0.2);
+      border-color: var(--neon-cyan);
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: var(--neon-cyan);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid var(--silver);
+      color: var(--white);
+      font-size: 1rem;
+      font-family: 'Rajdhani', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--racing-red);
+      background: rgba(225, 6, 0, 0.1);
+      box-shadow: 0 0 20px rgba(225, 6, 0, 0.3);
+    }
+
+    .btn {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 2px;
+      padding: 18px 40px;
+      background: linear-gradient(135deg, var(--racing-red), #c00500);
+      color: var(--white);
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+    }
+
+    .btn:hover {
+      background: linear-gradient(135deg, #ff1a00, var(--racing-red));
+      transform: scale(1.02);
+      box-shadow: 0 10px 30px rgba(225, 6, 0, 0.6);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, var(--track-gray), var(--carbon-black));
+      border: 2px solid var(--silver);
+    }
+
+    .btn-secondary:hover {
+      background: linear-gradient(135deg, var(--silver), var(--track-gray));
+      color: var(--carbon-black);
+    }
+
+    .message {
+      padding: 15px 20px;
+      margin-bottom: 20px;
+      border-left: 5px solid;
+      font-weight: 600;
+    }
+
+    .message.error {
+      background: rgba(225, 6, 0, 0.2);
+      border-color: var(--racing-red);
+      color: #ff6b6b;
+    }
+
+    .message.success {
+      background: rgba(0, 245, 255, 0.2);
+      border-color: var(--neon-cyan);
+      color: var(--neon-cyan);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 50px;
+      font-size: 1.5rem;
+      color: var(--neon-cyan);
+    }
+
+    .spinner {
+      border: 5px solid var(--track-gray);
+      border-top: 5px solid var(--racing-red);
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .logout-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      background: var(--track-gray);
+      color: var(--white);
+      border: 2px solid var(--racing-red);
+      cursor: pointer;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 600;
+      text-transform: uppercase;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .logout-btn:hover {
+      background: var(--racing-red);
+      transform: scale(1.05);
+    }
+
+    .user-info {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      padding: 15px 20px;
+      background: rgba(42, 42, 53, 0.95);
+      border: 2px solid var(--neon-cyan);
+      font-weight: 600;
+      color: var(--neon-cyan);
+      z-index: 1000;
+      text-align: right;
+    }
+
+    .races-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .race-card {
+      background: linear-gradient(135deg, var(--track-gray), #1a1a24);
+      border: 2px solid var(--silver);
+      padding: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .race-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--neon-cyan);
+      box-shadow: 0 10px 30px rgba(0, 245, 255, 0.3);
+    }
+
+    .race-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+
+    .race-info {
+      color: var(--silver);
+      font-size: 1rem;
+      margin: 5px 0;
+    }
+
+    .race-status {
+      display: inline-block;
+      padding: 5px 15px;
+      margin-top: 10px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      background: var(--racing-red);
+      color: var(--white);
+    }
+
+    .prediction-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .prediction-item {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 15px;
+      border: 2px solid var(--racing-red);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    table thead {
+      background: linear-gradient(135deg, var(--racing-red), #a00400);
+    }
+
+    table th {
+      padding: 20px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem;
+      letter-spacing: 2px;
+      text-align: left;
+      text-transform: uppercase;
+    }
+
+    table td {
+      padding: 18px;
+      border-bottom: 1px solid rgba(192, 192, 200, 0.2);
+    }
+
+    table tbody tr {
+      background: rgba(42, 42, 53, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    table tbody tr:hover {
+      background: rgba(225, 6, 0, 0.1);
+      transform: translateX(5px);
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 2rem; }
+      .nav { flex-direction: column; }
+      .races-grid { grid-template-columns: 1fr; }
+      .prediction-grid { grid-template-columns: 1fr; }
+      .user-info, .logout-btn { position: static; width: 100%; margin-bottom: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    // ==========================================
+    // CONFIGURACIÓN
+    // ==========================================
+    const API_URL = 'https://script.google.com/macros/s/AKfycbyxJmWR5k-sw-d9E8PDrcSEqwjg8wcMTojsC5mG2IP9WlaWxiV59eyY8-Dn2D7mHsYsIg/exec';
+
+    const PILOTOS = [
+      'Alexander Albon', 'Fernando Alonso', 'Kimi Antonelli', 'Oliver Bearman', 
+      'Gabriel Bortoleto', 'Valtteri Bottas', 'Franco Colapinto', 'Pierre Gasly', 
+      'Isack Hadjar', 'Lewis Hamilton', 'Nico Hulkenberg', 'Liam Lawson', 
+      'Charles Leclerc', 'Arvid Lindblad', 'Lando Norris', 'Esteban Ocon', 
+      'Sergio Perez', 'Oscar Piastri', 'George Russell', 'Carlos Sainz', 
+      'Lance Stroll', 'Max Verstappen', 'Sin abandono'
+    ].sort();
+
+    const CALENDARIO = [
+      { id: 1, nombre: 'Gran Premio de Australia', pais: 'Australia', fecha: '08/03/2026', limite: '05/03/2026 20:00' },
+      { id: 2, nombre: 'Gran Premio de China', pais: 'China', fecha: '15/03/2026', limite: '12/03/2026 20:00' },
+      { id: 3, nombre: 'Gran Premio de Japón', pais: 'Japón', fecha: '29/03/2026', limite: '26/03/2026 20:00' },
+      { id: 4, nombre: 'Gran Premio de Baréin', pais: 'Baréin', fecha: '12/04/2026', limite: '09/04/2026 20:00' },
+      { id: 5, nombre: 'Gran Premio de Arabia Saudita', pais: 'Arabia Saudita', fecha: '19/04/2026', limite: '16/04/2026 20:00' },
+      { id: 6, nombre: 'Gran Premio de Miami', pais: 'Estados Unidos', fecha: '03/05/2026', limite: '30/04/2026 20:00' },
+      { id: 7, nombre: 'Gran Premio de Emilia-Romaña', pais: 'Italia', fecha: '24/05/2026', limite: '21/05/2026 20:00' },
+      { id: 8, nombre: 'Gran Premio de Mónaco', pais: 'Mónaco', fecha: '07/06/2026', limite: '04/06/2026 20:00' },
+      { id: 9, nombre: 'Gran Premio de Barcelona-Cataluña', pais: 'España', fecha: '14/06/2026', limite: '11/06/2026 20:00' },
+      { id: 10, nombre: 'Gran Premio de Canadá', pais: 'Canadá', fecha: '24/05/2026', limite: '21/05/2026 20:00' },
+      { id: 11, nombre: 'Gran Premio de Austria', pais: 'Austria', fecha: '28/06/2026', limite: '25/06/2026 20:00' },
+      { id: 12, nombre: 'Gran Premio de Gran Bretaña', pais: 'Reino Unido', fecha: '05/07/2026', limite: '02/07/2026 20:00' },
+      { id: 13, nombre: 'Gran Premio de Bélgica', pais: 'Bélgica', fecha: '19/07/2024', limite: '16/07/2026 20:00' },
+      { id: 14, nombre: 'Gran Premio de Hungría', pais: 'Hungría', fecha: '26/07/2026', limite: '23/07/2026 20:00' },
+      { id: 15, nombre: 'Gran Premio de los Países Bajos', pais: 'Países Bajos', fecha: '23/08/2026', limite: '20/08/2026 20:00' },
+      { id: 16, nombre: 'Gran Premio de Italia', pais: 'Italia', fecha: '06/09/2026', limite: '03/09/2026 20:00' },
+      { id: 17, nombre: 'Gran Premio de Azerbaiyán', pais: 'Azerbaiyán', fecha: '26/09/2026', limite: '23/09/2026 20:00' },
+      { id: 18, nombre: 'Gran Premio de Singapur', pais: 'Singapur', fecha: '11/10/2026', limite: '08/10/2026 20:00' },
+      { id: 19, nombre: 'Gran Premio de Estados Unidos', pais: 'Estados Unidos', fecha: '25/10/2026', limite: '22/10/2026 20:00' },
+      { id: 20, nombre: 'Gran Premio de México', pais: 'México', fecha: '01/11/2026', limite: '29/10/2026 20:00' },
+      { id: 21, nombre: 'Gran Premio de Brasil', pais: 'Brasil', fecha: '08/11/2026', limite: '05/11/2026 20:00' },
+      { id: 22, nombre: 'Gran Premio de Las Vegas', pais: 'Estados Unidos', fecha: '21/11/2026', limite: '19/11/2026 20:00' },
+      { id: 23, nombre: 'Gran Premio de Catar', pais: 'Catar', fecha: '29/11/2026', limite: '26/11/2026 20:00' },
+      { id: 24, nombre: 'Gran Premio de Abu Dabi', pais: 'Emiratos Árabes', fecha: '06/12/2026', limite: '03/12/2026 20:00' },
+    ];
+
+    // ==========================================
+    // APP PRINCIPAL
+    // ==========================================
+    function App() {
+      const [usuario, setUsuario] = useState(null);
+      const [vistaActual, setVistaActual] = useState('login');
+      const [loading, setLoading] = useState(true);
+
+      useEffect(() => {
+        cargarSesion();
+      }, []);
+
+      const cargarSesion = () => {
+        try {
+          const sesion = localStorage.getItem('sesion_f1');
+          if (sesion) {
+            setUsuario(JSON.parse(sesion));
+            setVistaActual('dashboard');
+          }
+        } catch (error) {
+          console.log('No hay sesión');
+        }
+        setLoading(false);
+      };
+
+      const guardarSesion = (usuarioData) => {
+        localStorage.setItem('sesion_f1', JSON.stringify(usuarioData));
+        setUsuario(usuarioData);
+      };
+
+      const cerrarSesion = () => {
+        localStorage.removeItem('sesion_f1');
+        setUsuario(null);
+        setVistaActual('login');
+      };
+
+      if (loading) {
+        return <div className="loading"><div className="spinner"></div><div>Cargando...</div></div>;
+      }
+
+      if (!usuario) {
+        return <LoginRegistro onLogin={guardarSesion} />;
+      }
+
+      return (
+        <div className="container">
+          <button className="logout-btn" onClick={cerrarSesion}>Cerrar Sesión</button>
+          <div className="user-info">🏁 {usuario.nombre}</div>
+
+          <header className="header">
+            <h1>🏎️ Quiniela F1 2026</h1>
+            <p className="subtitle">Predicciones de Carreras</p>
+          </header>
+
+          <nav className="nav">
+            <button className={`nav-btn ${vistaActual === 'dashboard' ? 'active' : ''}`} onClick={() => setVistaActual('dashboard')}>Dashboard</button>
+            <button className={`nav-btn ${vistaActual === 'predicciones' ? 'active' : ''}`} onClick={() => setVistaActual('predicciones')}>Mis Predicciones</button>
+            <button className={`nav-btn ${vistaActual === 'ver_predicciones' ? 'active' : ''}`} onClick={() => setVistaActual('ver_predicciones')}>Ver Predicciones</button>
+            <button className={`nav-btn ${vistaActual === 'clasificacion' ? 'active' : ''}`} onClick={() => setVistaActual('clasificacion')}>Clasificación</button>
+          </nav>
+
+          {vistaActual === 'dashboard' && <Dashboard usuario={usuario} />}
+          {vistaActual === 'predicciones' && <MisPredicciones usuario={usuario} />}
+          {vistaActual === 'ver_predicciones' && <VerPrediccionesCarrera />}
+          {vistaActual === 'clasificacion' && <Clasificacion />}
+        </div>
+      );
+    }
+
+    // ==========================================
+    // COMPONENTE: LOGIN/REGISTRO
+    // ==========================================
+    function LoginRegistro({ onLogin }) {
+      const [modo, setModo] = useState('login');
+      const [form, setForm] = useState({ nombre: '', email: '', pin: '' });
+      const [mensaje, setMensaje] = useState(null);
+      const [cargando, setCargando] = useState(false);
+
+      const manejarSubmit = async (e) => {
+        e.preventDefault();
+        setCargando(true);
+        setMensaje(null);
+
+        try {
+          const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({ accion: modo, ...form })
+          });
+          const data = await response.json();
+
+          if (data.exito) {
+            setMensaje({ tipo: 'success', texto: data.mensaje });
+            setTimeout(() => onLogin(data.usuario), 1000);
+          } else {
+            setMensaje({ tipo: 'error', texto: data.mensaje });
+          }
+        } catch (error) {
+          setMensaje({ tipo: 'error', texto: 'Error de conexión' });
+        }
+        setCargando(false);
+      };
+
+      return (
+        <div className="container">
+          <header className="header">
+            <h1>🏎️ Quiniela F1 2026</h1>
+            <p className="subtitle">Predicciones de Carreras</p>
+          </header>
+
+          <div className="card" style={{ maxWidth: '500px', margin: '0 auto' }}>
+            <h2 style={{ marginBottom: '30px', textAlign: 'center', color: 'var(--neon-cyan)' }}>
+              {modo === 'login' ? 'Iniciar Sesión' : 'Registro'}
+            </h2>
+
+            {mensaje && <div className={`message ${mensaje.tipo}`}>{mensaje.texto}</div>}
+
+            <form onSubmit={manejarSubmit}>
+              {modo === 'registrar' && (
+                <div className="form-group">
+                  <label>Nombre</label>
+                  <input type="text" placeholder="Tu nombre" value={form.nombre} onChange={(e) => setForm({...form, nombre: e.target.value})} required />
+                </div>
+              )}
+              <div className="form-group">
+                <label>Email</label>
+                <input type="email" placeholder="tu@email.com" value={form.email} onChange={(e) => setForm({...form, email: e.target.value})} required />
+              </div>
+              <div className="form-group">
+                <label>PIN (4 dígitos)</label>
+                <input type="password" placeholder="1234" maxLength="4" value={form.pin} onChange={(e) => setForm({...form, pin: e.target.value})} required />
+              </div>
+              <button type="submit" className="btn" disabled={cargando}>{cargando ? 'Procesando...' : (modo === 'login' ? 'Entrar' : 'Registrarse')}</button>
+            </form>
+
+            <button className="btn btn-secondary" style={{ marginTop: '15px' }} onClick={() => setModo(modo === 'login' ? 'registrar' : 'login')}>
+              {modo === 'login' ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia sesión'}
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    // ==========================================
+    // COMPONENTE: DASHBOARD
+    // ==========================================
+    function Dashboard({ usuario }) {
+      const [carreraSeleccionada, setCarreraSeleccionada] = useState(null);
+      const [loading, setLoading] = useState(false);
+
+      if (carreraSeleccionada) {
+        return <FormularioPrediccion carrera={carreraSeleccionada} usuario={usuario} onVolver={() => setCarreraSeleccionada(null)} />;
+      }
+
+      return (
+        <div>
+          <h2 style={{ fontSize: '2rem', marginBottom: '30px', color: 'var(--neon-cyan)' }}>📅 Calendario</h2>
+          <div className="races-grid">
+            {CALENDARIO.map(carrera => (
+              <div key={carrera.id} className="race-card" onClick={() => setCarreraSeleccionada(carrera)}>
+                <div className="race-name">{carrera.nombre}</div>
+                <div className="race-info">📍 {carrera.pais}</div>
+                <div className="race-info">📅 {carrera.fecha}</div>
+                <div className="race-info">⏰ Límite: {carrera.limite}</div>
+                <div className="race-status">Hacer Predicción</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    // ==========================================
+    // COMPONENTE: FORMULARIO DE PREDICCIÓN
+    // ==========================================
+    function FormularioPrediccion({ carrera, usuario, onVolver }) {
+      const [pred, setPred] = useState({ p1: '', p2: '', p3: '', pole: '', vueltaRapida: '', abandono: '' });
+      const [mensaje, setMensaje] = useState(null);
+      const [cargando, setCargando] = useState(false);
+
+      const manejarSubmit = async (e) => {
+        e.preventDefault();
+        if (Object.values(pred).some(v => !v)) {
+          setMensaje({ tipo: 'error', texto: 'Completa todos los campos' });
+          return;
+        }
+
+        setCargando(true);
+        try {
+          const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({ accion: 'guardar_prediccion', usuarioId: usuario.id, carreraId: carrera.id, ...pred })
+          });
+          const data = await response.json();
+          if (data.exito) {
+            setMensaje({ tipo: 'success', texto: data.mensaje });
+            setTimeout(() => onVolver(), 2000);
+          } else {
+            setMensaje({ tipo: 'error', texto: data.mensaje });
+          }
+        } catch (error) {
+          setMensaje({ tipo: 'error', texto: 'Error al guardar' });
+        }
+        setCargando(false);
+      };
+
+      return (
+        <div>
+          <button className="btn btn-secondary" onClick={onVolver} style={{ marginBottom: '20px', width: 'auto', padding: '10px 30px' }}>← Volver</button>
+          <div className="card">
+            <h2 style={{ fontSize: '2.5rem', marginBottom: '10px', color: 'var(--racing-red)' }}>{carrera.nombre}</h2>
+            <p style={{ fontSize: '1.3rem', marginBottom: '30px' }}>📍 {carrera.pais} | 📅 {carrera.fecha}</p>
+            {mensaje && <div className={`message ${mensaje.tipo}`}>{mensaje.texto}</div>}
+            <form onSubmit={manejarSubmit}>
+              <div className="prediction-grid">
+                <div className="prediction-item">
+                  <label>🥇 Posición 1</label>
+                  <select value={pred.p1} onChange={(e) => setPred({...pred, p1: e.target.value})} required>
+                    <option value="">Selecciona</option>
+                    {PILOTOS.filter(p => p !== 'Sin abandono').map(p => <option key={p} value={p}>{p}</option>)}
+                  </select>
+                </div>
+                <div className="prediction-item">
+                  <label>🥈 Posición 2</label>
+                  <select value={pred.p2} onChange={(e) => setPred({...pred, p2: e.target.value})} required>
+                    <option value="">Selecciona</option>
+                    {PILOTOS.filter(p => p !== 'Sin abandono').map(p => <option key={p} value={p}>{p}</option>)}
+                  </select>
+                </div>
+                <div className="prediction-item">
+                  <label>🥉 Posición 3</label>
+                  <select value={pred.p3} onChange={(e) => setPred({...pred, p3: e.target.value})} required>
+                    <option value="">Selecciona</option>
+                    {PILOTOS.filter(p => p !== 'Sin abandono').map(p => <option key={p} value={p}>{p}</option>)}
+                  </select>
+                </div>
+                <div className="prediction-item">
+                  <label>🏁 Pole</label>
+                  <select value={pred.pole} onChange={(e) => setPred({...pred, pole: e.target.value})} required>
+                    <option value="">Selecciona</option>
+                    {PILOTOS.filter(p => p !== 'Sin abandono').map(p => <option key={p} value={p}>{p}</option>)}
+                  </select>
+                </div>
+                <div className="prediction-item">
+                  <label>⚡ Vuelta Rápida</label>
+                  <select value={pred.vueltaRapida} onChange={(e) => setPred({...pred, vueltaRapida: e.target.value})} required>
+                    <option value="">Selecciona</option>
+                    {PILOTOS.filter(p => p !== 'Sin abandono').map(p => <option key={p} value={p}>{p}</option>)}
+                  </select>
+                </div>
+                <div className="prediction-item">
+                  <label>💥 Abandono</label>
+                  <select value={pred.abandono} onChange={(e) => setPred({...pred, abandono: e.target.value})} required>
+                    <option value="">Selecciona</option>
+                    {PILOTOS.map(p => <option key={p} value={p}>{p}</option>)}
+                  </select>
+                </div>
+              </div>
+              <button type="submit" className="btn" disabled={cargando} style={{ marginTop: '30px' }}>💾 Guardar</button>
+            </form>
+          </div>
+        </div>
+      );
+    }
+
+    // ==========================================
+    // COMPONENTE: MIS PREDICCIONES
+    // ==========================================
+    function MisPredicciones({ usuario }) {
+      const [predicciones, setPredicciones] = useState([]);
+      const [loading, setLoading] = useState(true);
+
+      useEffect(() => {
+        cargarPredicciones();
+      }, []);
+
+      const cargarPredicciones = async () => {
+        try {
+          const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({ accion: 'obtener_mis_predicciones', usuarioId: usuario.id })
+          });
+          const data = await response.json();
+          if (data.exito) setPredicciones(data.predicciones);
+        } catch (error) {
+          console.error('Error:', error);
+        }
+        setLoading(false);
+      };
+
+      if (loading) return <div className="loading"><div className="spinner"></div></div>;
+
+      return (
+        <div>
+          <h2 style={{ fontSize: '2rem', marginBottom: '30px', color: 'var(--neon-cyan)' }}>📋 Mis Predicciones</h2>
+          {predicciones.length === 0 ? (
+            <div className="card" style={{ textAlign: 'center' }}>
+              <h3>Aún no has hecho predicciones</h3>
+            </div>
+          ) : (
+            predicciones.map(p => (
+              <div key={p.carreraId} className="card">
+                <h3>{p.carreraNombre}</h3>
+                <div className="prediction-grid">
+                  <div style={{ background: 'rgba(0,0,0,0.3)', padding: '15px' }}>
+                    <strong>🥇 P1:</strong> {p.prediccion.p1}
+                  </div>
+                  <div style={{ background: 'rgba(0,0,0,0.3)', padding: '15px' }}>
+                    <strong>🥈 P2:</strong> {p.prediccion.p2}
+                  </div>
+                  <div style={{ background: 'rgba(0,0,0,0.3)', padding: '15px' }}>
+                    <strong>🥉 P3:</strong> {p.prediccion.p3}
+                  </div>
+                  <div style={{ background: 'rgba(0,0,0,0.3)', padding: '15px' }}>
+                    <strong>🏁 Pole:</strong> {p.prediccion.pole}
+                  </div>
+                  <div style={{ background: 'rgba(0,0,0,0.3)', padding: '15px' }}>
+                    <strong>⚡ Vuelta:</strong> {p.prediccion.vueltaRapida}
+                  </div>
+                  <div style={{ background: 'rgba(0,0,0,0.3)', padding: '15px' }}>
+                    <strong>💥 Abandono:</strong> {p.prediccion.abandono}
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      );
+    }
+
+    // ==========================================
+    // COMPONENTE: VER PREDICCIONES
+    // ==========================================
+    function VerPrediccionesCarrera() {
+      const [carreras, setCarreras] = useState([]);
+      const [carreraSeleccionada, setCarreraSeleccionada] = useState(null);
+      const [datosPred, setDatosPred] = useState(null);
+      const [loading, setLoading] = useState(true);
+
+      useEffect(() => {
+        cargarCarreras();
+      }, []);
+
+      const cargarCarreras = async () => {
+        try {
+          const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({ accion: 'obtener_calendario' })
+          });
+          const data = await response.json();
+          if (data.exito) {
+            setCarreras(data.carreras.filter(c => !c.prediccionAbierta));
+          }
+        } catch (error) {
+          console.error('Error:', error);
+        }
+        setLoading(false);
+      };
+
+      const verPredicciones = async (carrera) => {
+        setCarreraSeleccionada(carrera);
+        setLoading(true);
+        try {
+          const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({ accion: 'obtener_predicciones_carrera', carreraId: carrera.id })
+          });
+          const data = await response.json();
+          if (data.exito) setDatosPred(data);
+        } catch (error) {
+          console.error('Error:', error);
+        }
+        setLoading(false);
+      };
+
+      if (datosPred) {
+        return (
+          <div>
+            <button className="btn btn-secondary" onClick={() => { setCarreraSeleccionada(null); setDatosPred(null); }} style={{ marginBottom: '20px', width: 'auto', padding: '10px 30px' }}>← Volver</button>
+            <div className="card">
+              <h2 style={{ fontSize: '2.5rem', marginBottom: '20px', color: 'var(--racing-red)' }}>{datosPred.nombreCarrera}</h2>
+              <p style={{ fontSize: '1.3rem', marginBottom: '30px', textAlign: 'center' }}>👥 {datosPred.totalParticipantes} Participantes</p>
+              {datosPred.predicciones && datosPred.predicciones.map((p, idx) => (
+                <div key={idx} style={{ marginBottom: '20px', padding: '20px', background: 'rgba(0,0,0,0.3)', border: '2px solid var(--neon-cyan)' }}>
+                  <h4 style={{ marginBottom: '15px' }}>
+                    {p.nombre}
+                    {p.puntos && <span style={{ float: 'right', color: 'var(--gold)', fontSize: '1.5rem' }}>{p.puntos.total} PTS</span>}
+                  </h4>
+                  <div className="prediction-grid">
+                    <div><strong>🥇 P1:</strong> {p.prediccion.p1} {p.puntos && <div style={{ color: 'var(--neon-cyan)' }}>+{p.puntos.p1}</div>}</div>
+                    <div><strong>🥈 P2:</strong> {p.prediccion.p2} {p.puntos && <div style={{ color: 'var(--neon-cyan)' }}>+{p.puntos.p2}</div>}</div>
+                    <div><strong>🥉 P3:</strong> {p.prediccion.p3} {p.puntos && <div style={{ color: 'var(--neon-cyan)' }}>+{p.puntos.p3}</div>}</div>
+                    <div><strong>🏁 Pole:</strong> {p.prediccion.pole} {p.puntos && <div style={{ color: 'var(--neon-cyan)' }}>+{p.puntos.pole}</div>}</div>
+                    <div><strong>⚡ Vuelta:</strong> {p.prediccion.vueltaRapida} {p.puntos && <div style={{ color: 'var(--neon-cyan)' }}>+{p.puntos.vueltaRapida}</div>}</div>
+                    <div><strong>💥 Abandono:</strong> {p.prediccion.abandono} {p.puntos && <div style={{ color: 'var(--neon-cyan)' }}>+{p.puntos.abandono}</div>}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      if (loading) return <div className="loading"><div className="spinner"></div></div>;
+
+      return (
+        <div>
+          <h2 style={{ fontSize: '2rem', marginBottom: '30px', color: 'var(--neon-cyan)' }}>👁️ Ver Predicciones</h2>
+          {carreras.length === 0 ? (
+            <div className="card">Aún no hay carreras cerradas</div>
+          ) : (
+            <div className="races-grid">
+              {carreras.map(c => (
+                <div key={c.id} className="race-card" onClick={() => verPredicciones(c)}>
+                  <div className="race-name">{c.nombre}</div>
+                  <div className="race-info">📍 {c.pais}</div>
+                  <div className="race-info">📅 {c.fecha}</div>
+                  <div className="race-status">{c.yaTermino ? '📊 Ver Puntos' : '👥 Ver Predicciones'}</div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // ==========================================
+    // COMPONENTE: CLASIFICACIÓN
+    // ==========================================
+    function Clasificacion() {
+      const [clasificacion, setClasificacion] = useState([]);
+      const [loading, setLoading] = useState(true);
+
+      useEffect(() => {
+        cargarClasificacion();
+      }, []);
+
+      const cargarClasificacion = async () => {
+        try {
+          const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({ accion: 'obtener_clasificacion' })
+          });
+          const data = await response.json();
+          if (data.exito) setClasificacion(data.clasificacion);
+        } catch (error) {
+          console.error('Error:', error);
+        }
+        setLoading(false);
+      };
+
+      if (loading) return <div className="loading"><div className="spinner"></div></div>;
+
+      return (
+        <div>
+          <h2 style={{ fontSize: '2rem', marginBottom: '30px', color: 'var(--gold)', textAlign: 'center' }}>🏆 Clasificación General</h2>
+          <div className="card">
+            <table>
+              <thead>
+                <tr>
+                  <th>Pos</th>
+                  <th>Nombre</th>
+                  <th>Puntos</th>
+                  <th>Carreras</th>
+                </tr>
+              </thead>
+              <tbody>
+                {clasificacion.map(u => (
+                  <tr key={u.posicion}>
+                    <td style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
+                      {u.posicion === 1 ? '🥇' : u.posicion === 2 ? '🥈' : u.posicion === 3 ? '🥉' : u.posicion}
+                    </td>
+                    <td style={{ fontSize: '1.2rem', fontWeight: '600' }}>{u.nombre}</td>
+                    <td style={{ fontSize: '1.5rem', color: 'var(--neon-cyan)', fontWeight: 'bold' }}>{u.totalPuntos}</td>
+                    <td style={{ color: 'var(--silver)' }}>{u.carrerasParticipadas}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    }
+
+    // ==========================================
+    // RENDERIZAR
+    // ==========================================
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
